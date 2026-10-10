@@ -1,0 +1,7 @@
+services:
+  backend:
+    image: devops-backend:v1
+    container_name: devops-backend-compose
+    ports:
+      - "127.0.0.1:3001:3000"
+    restart: unless-stopped
