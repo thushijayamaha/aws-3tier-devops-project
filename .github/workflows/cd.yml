@@ -55,12 +55,12 @@ jobs:
       - name: Verify AWS authentication
         run: aws sts get-caller-identity
 
-      - name: Test SSM SSH connection to Private EC2
+      - name: Deploy Backend to Private EC2 via SSM
         run: |
           COMMAND_ID=$(aws ssm send-command \
             --instance-ids i-0e5c541d531f2ba50 \
             --document-name AWS-RunShellScript \
-            --parameters '{"commands":["sudo -u ubuntu env -u SSH_AUTH_SOCK ssh -i /home/ubuntu/.ssh/devops-deploy -o IdentitiesOnly=yes -o BatchMode=yes -o ConnectTimeout=10 ubuntu@10.0.11.117 echo GITHUB_ACTIONS_PRIVATE_SSH_OK"]}' \
+            --parameters '{"commands":["sudo -u ubuntu bash -lc '\''set -e; cd /home/ubuntu/devops-backend; git fetch origin main; git merge --ff-only origin/main; ./scripts/deploy-production.sh'\''"]}' \
             --query 'Command.CommandId' \
             --output text)
 
